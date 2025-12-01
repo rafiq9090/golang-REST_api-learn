@@ -12,6 +12,7 @@ type Task struct {
 var Tasks = []Task{
 	{ID: 1, Title: "Learn Go", Done: true, CreatedAt: time.Now()},
 	{ID: 2, Title: "Build REST API", Done: false, CreatedAt: time.Now()},
+	{ID: 3, Title: "Learn React", Done: false, CreatedAt: time.Now()},
 }
 
-var NextID = 3
+var NextID = 4

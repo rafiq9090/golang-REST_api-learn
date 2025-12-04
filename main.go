@@ -3,12 +3,15 @@ package main
 import (
 	"log"
 	"net/http"
+	"task-api/internal/database"
 	"task-api/internal/handlers"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	database.Connect()
+	log.Println("Postgres connected")
 
 	router := mux.NewRouter()
 

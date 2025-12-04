@@ -3,31 +3,40 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
+	"task-api/internal/database"
 	"task-api/internal/dto"
 	"task-api/internal/models"
-	"time"
 
 	"github.com/gorilla/mux"
 )
 
 func GetTasks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(models.Tasks)
+	// json.NewEncoder(w).Encode(models.Tasks)
+	var tasks []models.Task
+	database.DB.Find(&tasks)
+	json.NewEncoder(w).Encode(tasks)
 }
 
 func GetTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)["id"]
-	idInt, _ := strconv.Atoi(id)
+	// idInt, _ := strconv.Atoi(id)
 
-	for _, task := range models.Tasks {
-		if task.ID == idInt {
-			json.NewEncoder(w).Encode(task)
-			return
-		}
+	// for _, task := range models.Tasks {
+	// 	if task.ID == idInt {
+	// 		json.NewEncoder(w).Encode(task)
+	// 		return
+	// 	}
+	// }
+	var task models.Task
+	if result := database.DB.First(&task, id); result.Error != nil {
+		http.Error(w, "Task not found", http.StatusNotFound)
+		return
 	}
-	http.Error(w, "Task not found", http.StatusNotFound)
+	json.NewEncoder(w).Encode(task)
+
+	// http.Error(w, "Task not found", http.StatusNotFound)
 }
 
 func CreateTask(w http.ResponseWriter, r *http.Request) {
@@ -51,15 +60,21 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// task := models.Task{
+	// 	ID:        models.NextID,
+	// 	Title:     input.Title,
+	// 	Done:      input.Done,
+	// 	CreatedAt: time.Now(),
+	// }
+	// models.NextID++
+	// models.Tasks = append(models.Tasks, task)
+	// w.WriteHeader(http.StatusCreated)
+	// json.NewEncoder(w).Encode(task)
 	task := models.Task{
-		ID:        models.NextID,
-		Title:     input.Title,
-		Done:      input.Done,
-		CreatedAt: time.Now(),
+		Title: input.Title,
+		Done:  input.Done,
 	}
-	models.NextID++
-	models.Tasks = append(models.Tasks, task)
-	w.WriteHeader(http.StatusCreated)
+	database.DB.Create(&task)
 	json.NewEncoder(w).Encode(task)
 
 }
@@ -67,31 +82,57 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)["id"]
-	idInt, _ := strconv.Atoi(id)
+	// idInt, _ := strconv.Atoi(id)
 
-	for i, task := range models.Tasks {
-		if task.ID == idInt {
-			var updatedTask models.Task
-			json.NewDecoder(r.Body).Decode(&updatedTask)
-			updatedTask.ID = idInt
-			models.Tasks[i] = updatedTask
-			json.NewEncoder(w).Encode(updatedTask)
-			return
-		}
+	// for i, task := range models.Tasks {
+	// 	if task.ID == idInt {
+	// 		var updatedTask models.Task
+	// 		json.NewDecoder(r.Body).Decode(&updatedTask)
+	// 		updatedTask.ID = idInt
+	// 		models.Tasks[i] = updatedTask
+	// 		json.NewEncoder(w).Encode(updatedTask)
+	// 		return
+	// 	}
+	// }
+	// http.Error(w, "Task not found", http.StatusNotFound)
+
+	var task models.Task
+	if result := database.DB.First(&task, id); result.Error != nil {
+		http.Error(w, "Task not found", http.StatusNotFound)
+		return
 	}
-	http.Error(w, "Task not found", http.StatusNotFound)
+	var input dto.CreateTaskRequest
+	json.NewDecoder(r.Body).Decode(&input)
+	if errs := dto.ValidateCreateTask(input); errs != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": errs["Title"]})
+		return
+	}
+	task.Title = input.Title
+	task.Done = input.Done
+	database.DB.Save(&task)
+	json.NewEncoder(w).Encode(task)
+
 }
 
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
-	idInt, _ := strconv.Atoi(id)
+	// idInt, _ := strconv.Atoi(id)
 
-	for i, task := range models.Tasks {
-		if task.ID == idInt {
-			models.Tasks = append(models.Tasks[:i], models.Tasks[i+1:]...)
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
+	// for i, task := range models.Tasks {
+	// 	if task.ID == idInt {
+	// 		models.Tasks = append(models.Tasks[:i], models.Tasks[i+1:]...)
+	// 		w.WriteHeader(http.StatusNoContent)
+	// 		return
+	// 	}
+	// }
+	// http.Error(w, "Task not found", http.StatusNotFound)
+
+	var task models.Task
+	if result := database.DB.First(task, id); result.Error != nil {
+		http.Error(w, "Tasks not found", http.StatusNotFound)
+		return
 	}
-	http.Error(w, "Task not found", http.StatusNotFound)
+	database.DB.Delete(&task)
+	w.WriteHeader(http.StatusNoContent)
 }

@@ -7,12 +7,6 @@ type CreateTaskRequest struct {
 	Done  bool   `json:"done"`
 }
 
-var validate *validator.Validate
-
-func init() {
-	validate = validator.New()
-}
-
 func ValidateCreateTask(req CreateTaskRequest) map[string]string {
 	err := validate.Struct(req)
 	if err == nil {

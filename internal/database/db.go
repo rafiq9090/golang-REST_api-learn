@@ -22,8 +22,8 @@ func Connect() {
 	DB = db
 	log.Println("PostgreSQL is connected")
 
-	if err := DB.AutoMigrate(&models.Task{}); err != nil {
+	if err := DB.AutoMigrate(&models.Task{}, &models.Product{}); err != nil {
 		log.Fatal("table not insert: ", err)
 	}
-	log.Println("tasks table is created")
+	log.Println("tables are created")
 }

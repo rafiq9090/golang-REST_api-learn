@@ -7,4 +7,5 @@ import (
 func Setup(router *mux.Router) {
 	api := router.PathPrefix("/api").Subrouter()
 	TaskRoutes(api)
+	ProductRoutes(api)
 }

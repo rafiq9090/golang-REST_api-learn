@@ -16,14 +16,14 @@ func Connect() {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("PostgreSQL কানেক্ট করতে পারিনি: ", err)
+		log.Fatal("PostgreSQL not cannecting: ", err)
 	}
 
 	DB = db
-	log.Println("PostgreSQL সফলভাবে কানেক্ট হয়েছে!")
+	log.Println("PostgreSQL is connected")
 
 	if err := DB.AutoMigrate(&models.Task{}); err != nil {
-		log.Fatal("টেবিল মাইগ্রেট করতে পারিনি: ", err)
+		log.Fatal("table not insert: ", err)
 	}
-	log.Println("tasks টেবিল তৈরি/আপডেট হয়েছে")
+	log.Println("tasks table is created")
 }

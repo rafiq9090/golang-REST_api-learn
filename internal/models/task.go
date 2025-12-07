@@ -3,7 +3,7 @@ package models
 import "time"
 
 type Task struct {
-	ID        int       `gorm:"primaryKey" json:"id"`
+	ID        uint      `gorm:"primaryKey" json:"id"`
 	Title     string    `gorm:"type:varchar(100);not null" json:"title" validate:"required,min=2,max=100"`
 	Done      bool      `gorm:"default:false" json:"done"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`

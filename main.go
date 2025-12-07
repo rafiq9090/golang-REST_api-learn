@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"task-api/internal/config"
 	"task-api/internal/database"
 	"task-api/internal/routes"
 
@@ -10,8 +11,9 @@ import (
 )
 
 func main() {
+	config.Load()
 	database.Connect()
-	log.Println("Postgres connected")
+	log.Printf("%s started on port %s", config.App.AppName, config.App.Port)
 
 	router := mux.NewRouter()
 
@@ -22,6 +24,6 @@ func main() {
 	// router.HandleFunc("/api/tasks/{id}", handlers.UpdateTask).Methods("PUT")
 	// router.HandleFunc("/api/tasks/{id}", handlers.DeleteTask).Methods("DELETE")
 	routes.Setup(router)
-	log.Println("API চলছে → http://localhost:8081")
-	log.Fatal(http.ListenAndServe(":8081", router))
+	log.Println("API চলছে → http://localhost:" + config.App.Port)
+	log.Fatal(http.ListenAndServe(":"+config.App.Port, router))
 }

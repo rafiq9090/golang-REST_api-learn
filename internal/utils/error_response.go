@@ -19,3 +19,9 @@ func JSONError(w http.ResponseWriter, massage string, statusCode int, details ma
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+func JSONSuccess(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(data)
+}

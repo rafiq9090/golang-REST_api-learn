@@ -8,6 +8,14 @@ import (
 	"task-api/internal/utils"
 )
 
+// GetProducts godoc
+// @Summary      Get all products (protected)
+// @Tags         products
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200 {array} models.Product
+// @Failure      401 {object} utils.ErrorResponse
+// @Router       /products [get]
 func GetProducts(w http.ResponseWriter, r *http.Request) {
 	products, err := service.Product.GetAll()
 	if err != nil {
@@ -17,6 +25,16 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 	utils.JSONSuccess(w, products)
 }
 
+// CreateProduct godoc
+// @Summary      Create a new product (protected)
+// @Tags         products
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body body dto.CreateProductRequest true "Product data"
+// @Success      201 {object} models.Product
+// @Failure      400,401 {object} utils.ErrorResponse
+// @Router       /products [post]
 func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var input dto.CreateProductRequest
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {

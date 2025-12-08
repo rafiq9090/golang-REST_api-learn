@@ -11,6 +11,15 @@ import (
 
 var JWT_SECRET = []byte("your-super-secret-jwt-key-2025")
 
+// Register godoc
+// @Summary      Register a new user
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body body dto.RegisterRequest true "User info"
+// @Success      200 {object} map[string]string
+// @Failure      400 {object} utils.ErrorResponse
+// @Router       /register [post]
 func Register(w http.ResponseWriter, r *http.Request) {
 	var input dto.RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
@@ -31,6 +40,15 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	utils.JSONSuccess(w, map[string]any{"message": "Registered successfully", "user_id": user.ID})
 }
 
+// Login godoc
+// @Summary      Login user and get JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body body dto.LoginRequest true "Login credentials"
+// @Success      200 {object} dto.AuthResponse
+// @Failure      401 {object} utils.ErrorResponse
+// @Router       /login [post]
 func Login(w http.ResponseWriter, r *http.Request) {
 	var input dto.LoginRequest
 	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {

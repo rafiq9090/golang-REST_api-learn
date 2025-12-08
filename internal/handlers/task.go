@@ -11,6 +11,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetTasks godoc
+// @Summary      Get all tasks (protected)
+// @Tags         tasks
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200 {array} models.Task
+// @Failure      401 {object} utils.ErrorResponse
+// @Router       /tasks [get]
 func GetTasks(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Content-Type", "application/json")
 	// // json.NewEncoder(w).Encode(models.Tasks)
@@ -26,6 +34,16 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 	utils.JSONSuccess(w, tasks)
 }
 
+// CreateTask godoc
+// @Summary      Create a new task (protected)
+// @Tags         tasks
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body body dto.CreateTaskRequest true "Task data"
+// @Success      201 {object} models.Task
+// @Failure      400,401 {object} utils.ErrorResponse
+// @Router       /tasks [post]
 func GetTask(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)["id"]
@@ -53,6 +71,16 @@ func GetTask(w http.ResponseWriter, r *http.Request) {
 	// http.Error(w, "Task not found", http.StatusNotFound)
 }
 
+// CreateTask godoc
+// @Summary      Create a new task (protected)
+// @Tags         tasks
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        body body dto.CreateTaskRequest true "Task data"
+// @Success      201 {object} models.Task
+// @Failure      400,401 {object} utils.ErrorResponse
+// @Router       /tasks [post]
 func CreateTask(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("Content-Type", "application/json")
 	// var task models.Task
@@ -101,6 +129,17 @@ func CreateTask(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// UpdateTask godoc
+// @Summary      Update a task (protected)
+// @Tags         tasks
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        id   path   uint   true  "Task ID"
+// @Param        body body   dto.CreateTaskRequest true "Task data"
+// @Success      200  {object} models.Task
+// @Failure      400,401,404 {object} utils.ErrorResponse
+// @Router       /tasks/{id} [put]
 func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	// w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)["id"]
@@ -158,6 +197,14 @@ func UpdateTask(w http.ResponseWriter, r *http.Request) {
 	utils.JSONSuccess(w, task)
 }
 
+// DeleteTask godoc
+// @Summary      Delete a task (protected)
+// @Tags         tasks
+// @Security     BearerAuth
+// @Param        id   path   uint   true  "Task ID"
+// @Success      204  {object} models.Task
+// @Failure      400,401,404 {object} utils.ErrorResponse
+// @Router       /tasks/{id} [delete]
 func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	idInt, _ := strconv.ParseUint(id, 10, 64)
